@@ -49,6 +49,11 @@
         integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous">
     </script>
     <script>
+        $(function(){
+            $("#Next").bind("click", function () {
+                vm.stage+=1
+            })
+        });
         const dataMapping = {
             A:'123',
             B:'456',
@@ -64,7 +69,7 @@
             stages:[
             {
             stage:'1',
-            contents:'<div class="form-check"><input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"><label class="form-check-label" for="flexRadioDefault1">主持人模式</label></div><div class="form-check"><input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked><label class="form-check-label" for="flexRadioDefault2">輔助模式</label></div>',
+            contents:'<div class="form-check"><input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault1"><label class="form-check-label" for="flexRadioDefault1">主持人模式</label></div><div class="form-check"><input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault2" checked><label class="form-check-label" for="flexRadioDefault2">輔助模式</label></div>',
             },
             {
             stage:'2',
@@ -72,7 +77,7 @@
             },
             {
             stage:'3',
-            contents:'3',
+            contents:'<div>人物樣式選擇<div class="form-check"><input class="form-check-input" type="radio" name="CharacterStyle" id="flexRadioDefault1"><label class="form-check-label" for="flexRadioDefault1">預設樣式</label></div><div class="form-check"><input class="form-check-input" type="radio" name="CharacterStyle" id="flexRadioDefault2" checked><label class="form-check-label" for="flexRadioDefault2">自訂樣式</label></div></div>',
             },
             ],
             },
