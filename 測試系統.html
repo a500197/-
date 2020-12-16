@@ -30,9 +30,23 @@
             <div id="app" class="col ">
                 <center>
                     <H2>選項</H2>
-                    <div v-for="value of stages" v-show="stage==value.stage"><div v-html="value.contents"></div> </div>
+                    <div v-show="stage==1">
+                        <div class="form-check"><input class="form-check-input" type="radio" name="Mode"
+                                id="flexRadioDefault1"><label class="form-check-label"
+                                for="flexRadioDefault1">主持人模式</label></div>
+                        <div class="form-check"><input class="form-check-input" type="radio" name="Mode"
+                                id="flexRadioDefault2" checked><label class="form-check-label"
+                                for="flexRadioDefault2">輔助模式</label></div>
+                    </div>
+                    <div v-show="stage==2">
+                        <select class="form-select" @change="PlayerChange" aria-label="Default select example">
+                            <option selected value=6>請選擇遊玩人數</option>
+                            <option v-for="item in PlayerNS" :value="item.value">{{item.text}}人</option>
+                        </select></div>
                     <div></div>
-                    <button id="Next">下一步</button>
+                    <!-- <button id="Next">下一步</button> -->
+                    <button @click="ClickAS(-1)">上一步</button>
+                    <button @click="ClickAS(1)">下一步</button>
                 </center>
             </div>
             <div class="col"></div>
@@ -49,96 +63,140 @@
         integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous">
     </script>
     <script>
-        $(function(){
-            $("#Next").bind("click", function () {
-                vm.stage+=1
-            })
-            $("#PlayerN").bind("change",function()
-            {
-                let PlayerN=$("#PlayerN").val()
-            })
+        $(function () {
+
+            // $("#Next").bind("click", function () {
+            //     vm.stage+=1
+            // })
+            // $("#PlayerN").bind("change",function()
+            // {
+            //     let PlayerN=$("#PlayerN").val()
+            // })
         });
         const dataMapping = {
-            A:'123',
-            B:'456',
-            c:'789',
-            d:'*0/'
+            A: '123',
+            B: '456',
+            c: '789',
+            d: '*0/'
         }
         let vm = new Vue({
             el: app,
-            data:{
-            stage:1,
-            type:'A',
-            
-            stages:[
-            {
-                stage:'1',
-                contents:'<div class="form-check"><input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault1"><label class="form-check-label" for="flexRadioDefault1">主持人模式</label></div><div class="form-check"><input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault2" checked><label class="form-check-label" for="flexRadioDefault2">輔助模式</label></div>',
-            },
-            {
-                stage:'2',
-                contents:'<select class="form-select" id="PlayerN" aria-label="Default select example"><option selected>請選擇遊玩人數</option> <option value="6">六人</option><option value="7">七人</option><option value="8">八人</option><option value="9">九人</option><option value="10">十人</option><option value="11">十一人</option><option value="12">十二人</option></select>',
-            },
-            {
-                stage:'3',
-                contents:'<div>人物樣式選擇<div class="form-check"><input class="form-check-input" type="radio" name="CharacterStyle" id="flexRadioDefault1"><label class="form-check-label" for="flexRadioDefault1">預設樣式</label></div><div class="form-check"><input class="form-check-input" type="radio" name="CharacterStyle" id="flexRadioDefault2" checked><label class="form-check-label" for="flexRadioDefault2">自訂樣式</label></div></div>',
-            },
-            ],
-            Players:[
-                {
-                ID:1,
-                NickName:'黑人',                
-                },
-                {
-                ID:2,
-                NickName:'猴子',                
-                },
-                {
-                ID:3,
-                NickName:'橘子',                
-                },
-                {
-                ID:4,
-                NickName:'鶴',                
-                },
-                {
-                ID:5,
-                NickName:'工頭',                
-                },
-                {
-                ID:6,
-                NickName:'啾啾',                
-                },
-                {
-                ID:7,
-                NickName:'猴子',                
-                },
-                {
-                ID:8,
-                NickName:'猴子',                
-                },
-                {
-                ID:9,
-                NickName:'猴子',                
-                },
-                {
-                ID:10,
-                NickName:'猴子',                
-                },
-                {
-                ID:11,
-                NickName:'猴子',                
-                },
-                {
-                ID:12,
-                NickName:'猴子',                
-                },
-            ],
+            data: {
+                stage: 1,
+                type: 'A',
+                PlayerN: 6,
+                PlayerNS: 
+                [
+                    {
+                        value:6,
+                        text:"六"
+                    },
+                    {
+                        value:7,
+                        text:"七"
+                    },
+                    {
+                        value:8,
+                        text:"八"
+                    },
+                    {
+                        value:9,
+                        text:"九"
+                    },
+                    {
+                        value:10,
+                        text:"十"
+                    },
+                    {
+                        value:11,
+                        text:"十一"
+                    },
+                    {
+                        value:12,
+                        text:"十二"
+                    },
+                ],
+                stages: [{
+                        stage: '1',
+                        contents: '<div class="form-check"><input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault1"><label class="form-check-label" for="flexRadioDefault1">主持人模式</label></div><div class="form-check"><input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault2" checked><label class="form-check-label" for="flexRadioDefault2">輔助模式</label></div>',
+                    },
+                    {
+                        stage: '2',
+                        // contents:'<select class="form-select" id="PlayerN"  aria-label="Default select example"><option selected>請選擇遊玩人數</option> <option value="6">六人</option><option value="7">七人</option><option value="8">八人</option><option value="9">九人</option><option value="10">十人</option><option value="11">十一人</option><option value="12">十二人</option></select>',
+                        contents: '<select class="form-select" @change="PlayerChange" aria-label="Default select example"><option selected>請選擇遊玩人數</option> <option value="6">六人</option><option value="7">七人</option><option value="8">八人</option><option value="9">九人</option><option value="10">十人</option><option value="11">十一人</option><option value="12">十二人</option></select>',
+
+                    },
+                    {
+                        stage: '3',
+                        contents: '<div>人物樣式選擇<div class="form-check"><input class="form-check-input" type="radio" name="CharacterStyle" id="flexRadioDefault1"><label class="form-check-label" for="flexRadioDefault1">預設樣式</label></div><div class="form-check"><input class="form-check-input" type="radio" name="CharacterStyle" id="flexRadioDefault2" checked><label class="form-check-label" for="flexRadioDefault2">自訂樣式</label></div></div>',
+                    },
+                ],
+                Players: [{
+                        ID: 1,
+                        NickName: '黑人',
+                    },
+                    {
+                        ID: 2,
+                        NickName: '猴子',
+                    },
+                    {
+                        ID: 3,
+                        NickName: '橘子',
+                    },
+                    {
+                        ID: 4,
+                        NickName: '鶴',
+                    },
+                    {
+                        ID: 5,
+                        NickName: '工頭',
+                    },
+                    {
+                        ID: 6,
+                        NickName: '啾啾',
+                    },
+                    {
+                        ID: 7,
+                        NickName: '猴子',
+                    },
+                    {
+                        ID: 8,
+                        NickName: '猴子',
+                    },
+                    {
+                        ID: 9,
+                        NickName: '猴子',
+                    },
+                    {
+                        ID: 10,
+                        NickName: '猴子',
+                    },
+                    {
+                        ID: 11,
+                        NickName: '猴子',
+                    },
+                    {
+                        ID: 12,
+                        NickName: '猴子',
+                    },
+                ],
             },
             computed: {
-                content(){
+                content() {
                     return dataMapping[this.type]
                 }
+            },
+            methods: {
+                ClickAS(a) {
+                    this.stage = this.stage + a
+                },
+                PlayerChange(event) {
+                    // console.log(event)
+                    // console.log(event.target)
+                    // console.log(event.target.value)
+                    // console.log(typeof( event.target.value))
+                    vm.PlayerN = event.target.value * 1
+                },    
             },
         })
     </script>
