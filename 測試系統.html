@@ -39,10 +39,25 @@
                                 for="flexRadioDefault2">輔助模式</label></div>
                     </div>
                     <div v-show="stage==2">
-                        <select class="form-select" @change="PlayerChange" aria-label="Default select example">
-                            <option selected value=6>請選擇遊玩人數</option>
-                            <option v-for="item in PlayerNS" :value="item.value">{{item.text}}人</option>
-                        </select></div>
+                        <h2>請選擇參與者</h2>
+                        <button @click="IFRandom">隨機</button>
+                        <div>
+                            <select class="form-select" @change="PlayerChange" v-show="PlayerRandom"
+                                aria-label="Default select example">
+                                <option selected disabled value=''>請選擇遊玩人數</option>
+                                <option v-for="item in PlayerNS" :value="item.value">{{item.text}}人</option>
+                            </select>
+                        </div>
+                        <div v-for="Player in Players">
+                            <input type="checkbox" :value="Player.NickName" v-model="PlayerV">{{Player.NickName}}
+                        </div>
+                    </div>
+                    <div v-for="(Player,index) in PlayerV" v-show="stage==3">
+                        <h2>調整參與者</h2>
+                        <input type="text" :id="index" v-model="PlayerV[index]">
+                    </div>
+
+
                     <div></div>
                     <!-- <button id="Next">下一步</button> -->
                     <button @click="ClickAS(-1)">上一步</button>
@@ -85,37 +100,39 @@
                 stage: 1,
                 type: 'A',
                 PlayerN: 6,
-                PlayerNS: 
-                [
-                    {
-                        value:6,
-                        text:"六"
+                PlayerNL: 6,
+                PlayerNF: 12,
+                PlayerRandom: false,
+                PlayerNS: [{
+                        value: 6,
+                        text: "六"
                     },
                     {
-                        value:7,
-                        text:"七"
+                        value: 7,
+                        text: "七"
                     },
                     {
-                        value:8,
-                        text:"八"
+                        value: 8,
+                        text: "八"
                     },
                     {
-                        value:9,
-                        text:"九"
+                        value: 9,
+                        text: "九"
                     },
                     {
-                        value:10,
-                        text:"十"
+                        value: 10,
+                        text: "十"
                     },
                     {
-                        value:11,
-                        text:"十一"
+                        value: 11,
+                        text: "十一"
                     },
                     {
-                        value:12,
-                        text:"十二"
+                        value: 12,
+                        text: "十二"
                     },
                 ],
+                PlayerV: [],
                 stages: [{
                         stage: '1',
                         contents: '<div class="form-check"><input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault1"><label class="form-check-label" for="flexRadioDefault1">主持人模式</label></div><div class="form-check"><input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault2" checked><label class="form-check-label" for="flexRadioDefault2">輔助模式</label></div>',
@@ -157,27 +174,27 @@
                     },
                     {
                         ID: 7,
-                        NickName: '猴子',
+                        NickName: '小I',
                     },
                     {
                         ID: 8,
-                        NickName: '猴子',
+                        NickName: '香菇',
                     },
                     {
                         ID: 9,
-                        NickName: '猴子',
+                        NickName: '3',
                     },
                     {
                         ID: 10,
-                        NickName: '猴子',
+                        NickName: '4',
                     },
                     {
                         ID: 11,
-                        NickName: '猴子',
+                        NickName: '5',
                     },
                     {
                         ID: 12,
-                        NickName: '猴子',
+                        NickName: '6',
                     },
                 ],
             },
@@ -190,13 +207,28 @@
                 ClickAS(a) {
                     this.stage = this.stage + a
                 },
+                IFRandom() {
+                    // console.log(this.PlayerRandom)
+                    this.PlayerRandom = !this.PlayerRandom;
+                },
                 PlayerChange(event) {
-                    // console.log(event)
-                    // console.log(event.target)
-                    // console.log(event.target.value)
-                    // console.log(typeof( event.target.value))
                     vm.PlayerN = event.target.value * 1
-                },    
+                    let who=this.RandomPlayer(vm.Players, vm.PlayerN)
+                    for(var v=0;v<who.length;v++){
+                        vm.PlayerV.push(who[v].NickName)
+                    }                    
+                },
+                RandomPlayer(arr, num) {
+                    let TempArr =Array.from(arr)
+                    let newArr = [];
+                    for (var i = 0; i < num; i++) {
+                        let index = Math.floor(Math.random() * TempArr.length);
+                        newArr.push(TempArr[index])
+                        TempArr.splice(index, 1);
+                    }
+                    return newArr;
+
+                },
             },
         })
     </script>
