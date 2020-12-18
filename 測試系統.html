@@ -40,27 +40,31 @@
                     </div>
                     <div v-show="stage==2">
                         <h2>請選擇參與者</h2>
-                        <button @click="IFRandom">隨機</button>
+                        <button @click="IFRandom()">隨機</button>
                         <div>
-                            <select class="form-select" @change="PlayerChange" v-show="PlayerRandom"
+                            <select class="form-select" @change="PlayerNChange" v-show="PlayerRandom"
                                 aria-label="Default select example">
                                 <option selected disabled value=''>請選擇遊玩人數</option>
                                 <option v-for="item in PlayerNS" :value="item.value">{{item.text}}人</option>
                             </select>
                         </div>
                         <div v-for="Player in Players">
-                            <input type="checkbox" :value="Player.NickName" v-model="PlayerV">{{Player.NickName}}
+                            <input type="checkbox" :value="Player.ID" v-model="PlayerV">{{Player.NickName}}
                         </div>
                     </div>
-                    <div v-for="(Player,index) in PlayerV" v-show="stage==3">
+                    <div  v-show="stage==3">
                         <h2>調整參與者</h2>
-                        <input type="text" :id="index" v-model="PlayerV[index]">
+                        <div v-for="Player in PlayerV">
+                        <input type="text" :id="Player" @change="PlayerChange" :value="Players[Player].NickName" >
+                        <!-- {{Players[(Player.ID-1)].NickName}} -->
+                        {{Players.ID}}
+                    </div>
                     </div>
 
 
                     <div></div>
                     <!-- <button id="Next">下一步</button> -->
-                    <button @click="ClickAS(-1)">上一步</button>
+                    <button @click="ClickAS(-1)" v-show="stage>1">上一步</button>
                     <button @click="ClickAS(1)">下一步</button>
                 </center>
             </div>
@@ -148,7 +152,12 @@
                         contents: '<div>人物樣式選擇<div class="form-check"><input class="form-check-input" type="radio" name="CharacterStyle" id="flexRadioDefault1"><label class="form-check-label" for="flexRadioDefault1">預設樣式</label></div><div class="form-check"><input class="form-check-input" type="radio" name="CharacterStyle" id="flexRadioDefault2" checked><label class="form-check-label" for="flexRadioDefault2">自訂樣式</label></div></div>',
                     },
                 ],
-                Players: [{
+                Players: [
+                    {
+                        ID: 0,
+                        NickName: '鈴鈴',
+                    },
+                    {
                         ID: 1,
                         NickName: '黑人',
                     },
@@ -158,7 +167,7 @@
                     },
                     {
                         ID: 3,
-                        NickName: '橘子',
+                        NickName: '龍井亂彈阿翔',
                     },
                     {
                         ID: 4,
@@ -166,7 +175,7 @@
                     },
                     {
                         ID: 5,
-                        NickName: '工頭',
+                        NickName: '烏日金城',
                     },
                     {
                         ID: 6,
@@ -182,52 +191,75 @@
                     },
                     {
                         ID: 9,
-                        NickName: '3',
+                        NickName: '海線謝欣穎',
                     },
                     {
                         ID: 10,
-                        NickName: '4',
+                        NickName: '龍井小流氓',
                     },
                     {
                         ID: 11,
-                        NickName: '5',
+                        NickName: '北屯Elon Musk',
                     },
-                    {
-                        ID: 12,
-                        NickName: '6',
-                    },
+                    
                 ],
             },
             computed: {
                 content() {
                     return dataMapping[this.type]
-                }
+                },
             },
             methods: {
                 ClickAS(a) {
-                    this.stage = this.stage + a
+                    
+                    let temp=  this.stage + a
+                    if (temp<1) {
+                        this.stage =1
+                    }  
+                    this.stage = temp
+                    if (this.stage==3 && this.PlayerV.length<6) {
+                        this.stage = 2
+                        alert("至少需要6人")
+                    } 
+                },                
+                PlayerNChange(event) {
+                    this.PlayerN = event.target.value * 1
+                    let Players=this.Players
+                    // console.log(Players)
+                    // let who=this.RandomPlayer(Players, this.PlayerN)
+                    let who=this.RandomPlayer()
+                    // console.log(who)
+                    this.PlayerV=[]
+                    for(var v=0;v<who.length;v++){
+                        this.PlayerV.push(who[v])
+                    }   
+                    // console.log(this.PlayerV)                              
                 },
                 IFRandom() {
-                    // console.log(this.PlayerRandom)
-                    this.PlayerRandom = !this.PlayerRandom;
+                    // console.log(this.PlayerRandom)                    
+                    this.PlayerRandom = !this.PlayerRandom;                    
                 },
                 PlayerChange(event) {
-                    vm.PlayerN = event.target.value * 1
-                    let who=this.RandomPlayer(vm.Players, vm.PlayerN)
-                    for(var v=0;v<who.length;v++){
-                        vm.PlayerV.push(who[v].NickName)
-                    }                    
+                    this.Players[event.target.id].NickName=event.target.value
                 },
-                RandomPlayer(arr, num) {
-                    let TempArr =Array.from(arr)
-                    let newArr = [];
+                RandomPlayer() {
+                    // console.log(typeof( arr))
+                    let arr = this.Players
+                    let num = this.PlayerN
+                    var TempArr =[]
+                    for (var i = 0; i < arr.length; i++){TempArr.push(arr[i].ID)}
+                    // arr.forEach(element => {TempArr.push(element)});
+                    // console.log(typeof( TempArr))
+                    // console.log( TempArr)
+                    var newArr = [];
                     for (var i = 0; i < num; i++) {
                         let index = Math.floor(Math.random() * TempArr.length);
-                        newArr.push(TempArr[index])
+                        newArr.push(TempArr[index])                        
                         TempArr.splice(index, 1);
+                        // console.log( TempArr)
                     }
+                    // console.log( newArr)
                     return newArr;
-
                 },
             },
         })
