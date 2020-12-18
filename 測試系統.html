@@ -49,7 +49,7 @@
                             </select>
                         </div>
                         <div v-for="Player in Players">
-                            <input type="checkbox" :value="Player.ID" v-model="PlayerV">{{Player.NickName}}
+                            <input type="checkbox" @change="PlayerNM" :value="Player.ID" :key="PlayerV[Player.ID]" v-model="PlayerV">{{Player.NickName}}
                         </div>
                     </div>
                     <div  v-show="stage==3">
@@ -92,12 +92,6 @@
             //     let PlayerN=$("#PlayerN").val()
             // })
         });
-        const dataMapping = {
-            A: '123',
-            B: '456',
-            c: '789',
-            d: '*0/'
-        }
         let vm = new Vue({
             el: app,
             data: {
@@ -107,7 +101,10 @@
                 PlayerNL: 6,
                 PlayerNF: 12,
                 PlayerRandom: false,
-                PlayerNS: [{
+                PlayerV: [],
+                PlayerNS: 
+                [
+                    {
                         value: 6,
                         text: "六"
                     },
@@ -136,23 +133,8 @@
                         text: "十二"
                     },
                 ],
-                PlayerV: [],
-                stages: [{
-                        stage: '1',
-                        contents: '<div class="form-check"><input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault1"><label class="form-check-label" for="flexRadioDefault1">主持人模式</label></div><div class="form-check"><input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault2" checked><label class="form-check-label" for="flexRadioDefault2">輔助模式</label></div>',
-                    },
-                    {
-                        stage: '2',
-                        // contents:'<select class="form-select" id="PlayerN"  aria-label="Default select example"><option selected>請選擇遊玩人數</option> <option value="6">六人</option><option value="7">七人</option><option value="8">八人</option><option value="9">九人</option><option value="10">十人</option><option value="11">十一人</option><option value="12">十二人</option></select>',
-                        contents: '<select class="form-select" @change="PlayerChange" aria-label="Default select example"><option selected>請選擇遊玩人數</option> <option value="6">六人</option><option value="7">七人</option><option value="8">八人</option><option value="9">九人</option><option value="10">十人</option><option value="11">十一人</option><option value="12">十二人</option></select>',
-
-                    },
-                    {
-                        stage: '3',
-                        contents: '<div>人物樣式選擇<div class="form-check"><input class="form-check-input" type="radio" name="CharacterStyle" id="flexRadioDefault1"><label class="form-check-label" for="flexRadioDefault1">預設樣式</label></div><div class="form-check"><input class="form-check-input" type="radio" name="CharacterStyle" id="flexRadioDefault2" checked><label class="form-check-label" for="flexRadioDefault2">自訂樣式</label></div></div>',
-                    },
-                ],
-                Players: [
+                Players: 
+                [
                     {
                         ID: 0,
                         NickName: '鈴鈴',
@@ -201,13 +183,13 @@
                         ID: 11,
                         NickName: '北屯Elon Musk',
                     },
-                    
+                    {
+                        ID: 12,
+                        NickName: 'Mark',
+                    },
                 ],
             },
             computed: {
-                content() {
-                    return dataMapping[this.type]
-                },
             },
             methods: {
                 ClickAS(a) {
@@ -260,6 +242,14 @@
                     }
                     // console.log( newArr)
                     return newArr;
+                },
+                PlayerNM(event){
+                    if (this.PlayerV.length>12) {
+                        //console.log( event.target.checked)
+                        event.target.checked=false;
+                        this.PlayerV.pop()
+                        alert("不能再多了")
+                    }
                 },
             },
         })
