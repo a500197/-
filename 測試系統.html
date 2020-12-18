@@ -56,12 +56,9 @@
                         <h2>調整參與者</h2>
                         <div v-for="Player in PlayerV">
                         <input type="text" :id="Player" @change="PlayerChange" :value="Players[Player].NickName" >
-                        <!-- {{Players[(Player.ID-1)].NickName}} -->
                         {{Players.ID}}
                     </div>
                     </div>
-
-
                     <div></div>
                     <!-- <button id="Next">下一步</button> -->
                     <button @click="ClickAS(-1)" v-show="stage>1">上一步</button>
@@ -106,33 +103,39 @@
                 [
                     {
                         value: 6,
-                        text: "六"
+                        text: "六",
                     },
                     {
                         value: 7,
-                        text: "七"
+                        text: "七",
                     },
                     {
                         value: 8,
-                        text: "八"
+                        text: "八",
                     },
                     {
                         value: 9,
-                        text: "九"
+                        text: "九",
                     },
                     {
                         value: 10,
-                        text: "十"
+                        text: "十",
                     },
                     {
                         value: 11,
-                        text: "十一"
+                        text: "十一",
                     },
                     {
                         value: 12,
-                        text: "十二"
+                        text: "十二",
                     },
                 ],
+                BodyGroup:                
+                    {
+                        GoD:0,
+                        General:0,
+                        Bad:0,
+                    },
                 Players: 
                 [
                     {
@@ -192,8 +195,7 @@
             computed: {
             },
             methods: {
-                ClickAS(a) {
-                    
+                ClickAS(a) {                    
                     let temp=  this.stage + a
                     if (temp<1) {
                         this.stage =1
@@ -214,7 +216,8 @@
                     this.PlayerV=[]
                     for(var v=0;v<who.length;v++){
                         this.PlayerV.push(who[v])
-                    }   
+                    }
+                    this.BodyGroupChange()
                     // console.log(this.PlayerV)                              
                 },
                 IFRandom() {
@@ -244,12 +247,30 @@
                     return newArr;
                 },
                 PlayerNM(event){
+                    
                     if (this.PlayerV.length>12) {
                         //console.log( event.target.checked)
                         event.target.checked=false;
                         this.PlayerV.pop()
                         alert("不能再多了")
                     }
+                    this.BodyGroupChange()
+                },
+                BodyGroupChange(){
+                    let PN=this.PlayerV.length
+                    let f= PN%3
+                    // console.log( f)
+                    let basics=(PN-f)/3
+                    this.BodyGroup.GoD=basics
+                    this.BodyGroup.General=basics
+                    this.BodyGroup.Bad=basics
+                    if (f==1){this.BodyGroup.General=this.BodyGroup.General+1}
+                    if (f==2)
+                    {
+                        this.BodyGroup.General=this.BodyGroup.General+1
+                        this.BodyGroup.GoD=this.BodyGroup.GoD+1
+                    }
+                    // console.log( this.BodyGroup)
                 },
             },
         })
