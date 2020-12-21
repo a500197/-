@@ -39,7 +39,7 @@
                                 for="flexRadioDefault2">輔助模式</label></div>
                     </div>
                     <div v-show="stage==2">
-                        <h2>請選擇參與者</h2>
+                        <h3>請選擇參與者</h3>
                         <button @click="IFRandom()">隨機</button>
                         <div>
                             <select class="form-select" @change="PlayerNChange" v-show="PlayerRandom"
@@ -49,15 +49,29 @@
                             </select>
                         </div>
                         <div v-for="Player in Players">
-                            <input type="checkbox" @change="PlayerNM" :value="Player.ID" :key="PlayerV[Player.ID]" v-model="PlayerV">{{Player.NickName}}
+                            <input type="checkbox" @change="PlayerNM" :value="Player.ID" :key="PlayerV[Player.ID]"
+                                v-model="PlayerV">{{Player.NickName}}
                         </div>
                     </div>
-                    <div  v-show="stage==3">
-                        <h2>調整參與者</h2>
+                    <div v-show="stage==3">
+                        <h3>調整參與者</h3>
                         <div v-for="Player in PlayerV">
-                        <input type="text" :id="Player" @change="PlayerChange" :value="Players[Player].NickName" >
-                        {{Players.ID}}
+                            <input type="text" :id="Player" @change="PlayerChange" :value="Players[Player].NickName">
+                            {{Players.ID}}
+                        </div>
                     </div>
+                    <div v-show="stage==4">
+                        <h3>選擇特殊身分類型</h3>
+                        神職(可選數量{{BodyGroup.God}}):
+                        <div v-for="Identity in GodIdentityType">
+                            <input type="checkbox" :id="Identity" :value="Identity.Name">{{Identity.Name}}
+                        </div>
+                        特殊狼人:
+                        <div v-for="Identity in WolfIdentityType">
+                            <input type="checkbox" :id="Identity" :value="Identity.Name">{{Identity.Name}}
+                        </div>
+
+
                     </div>
                     <div></div>
                     <!-- <button id="Next">下一步</button> -->
@@ -99,9 +113,7 @@
                 PlayerNF: 12,
                 PlayerRandom: false,
                 PlayerV: [],
-                PlayerNS: 
-                [
-                    {
+                PlayerNS: [{
                         value: 6,
                         text: "六",
                     },
@@ -130,15 +142,12 @@
                         text: "十二",
                     },
                 ],
-                BodyGroup:                
-                    {
-                        GoD:0,
-                        General:0,
-                        Bad:0,
-                    },
-                Players: 
-                [
-                    {
+                BodyGroup: {
+                    God: 0,
+                    General: 0,
+                    Bad: 0,
+                },
+                Players: [{
                         ID: 0,
                         NickName: '鈴鈴',
                     },
@@ -191,30 +200,53 @@
                         NickName: 'Mark',
                     },
                 ],
+                GodIdentityType: [{
+                        Name: "預言家(Prophet)",
+                    },
+                    {
+                        Name: "女巫(Witch)",
+                    },
+                    {
+                        Name: "獵人(Hunter)",
+                    },
+                    {
+                        Name: "守衛(Guard)",
+                    },
+                    {
+                        Name: "騎士(knight)",
+                    },
+
+                ],
+                WolfIdentityType: [{
+                        Name: "狼王(WolfKing)",
+                    },
+                    {
+                        Name: "雪狼(SnowWolf)",
+                    },
+                ],
             },
-            computed: {
-            },
+            computed: {},
             methods: {
-                ClickAS(a) {                    
-                    let temp=  this.stage + a
-                    if (temp<1) {
-                        this.stage =1
-                    }  
+                ClickAS(a) {
+                    let temp = this.stage + a
+                    if (temp < 1) {
+                        this.stage = 1
+                    }
                     this.stage = temp
-                    if (this.stage==3 && this.PlayerV.length<6) {
+                    if (this.stage == 3 && this.PlayerV.length < 6) {
                         this.stage = 2
                         alert("至少需要6人")
-                    } 
-                },                
+                    }
+                },
                 PlayerNChange(event) {
                     this.PlayerN = event.target.value * 1
-                    let Players=this.Players
+                    let Players = this.Players
                     // console.log(Players)
                     // let who=this.RandomPlayer(Players, this.PlayerN)
-                    let who=this.RandomPlayer()
+                    let who = this.RandomPlayer()
                     // console.log(who)
-                    this.PlayerV=[]
-                    for(var v=0;v<who.length;v++){
+                    this.PlayerV = []
+                    for (var v = 0; v < who.length; v++) {
                         this.PlayerV.push(who[v])
                     }
                     this.BodyGroupChange()
@@ -222,53 +254,56 @@
                 },
                 IFRandom() {
                     // console.log(this.PlayerRandom)                    
-                    this.PlayerRandom = !this.PlayerRandom;                    
+                    this.PlayerRandom = !this.PlayerRandom;
                 },
                 PlayerChange(event) {
-                    this.Players[event.target.id].NickName=event.target.value
+                    this.Players[event.target.id].NickName = event.target.value
                 },
                 RandomPlayer() {
                     // console.log(typeof( arr))
                     let arr = this.Players
                     let num = this.PlayerN
-                    var TempArr =[]
-                    for (var i = 0; i < arr.length; i++){TempArr.push(arr[i].ID)}
+                    var TempArr = []
+                    for (var i = 0; i < arr.length; i++) {
+                        TempArr.push(arr[i].ID)
+                    }
                     // arr.forEach(element => {TempArr.push(element)});
                     // console.log(typeof( TempArr))
                     // console.log( TempArr)
                     var newArr = [];
                     for (var i = 0; i < num; i++) {
                         let index = Math.floor(Math.random() * TempArr.length);
-                        newArr.push(TempArr[index])                        
+                        newArr.push(TempArr[index])
                         TempArr.splice(index, 1);
                         // console.log( TempArr)
                     }
                     // console.log( newArr)
                     return newArr;
                 },
-                PlayerNM(event){
-                    
-                    if (this.PlayerV.length>12) {
+                PlayerNM(event) {
+
+                    if (this.PlayerV.length > 12) {
                         //console.log( event.target.checked)
-                        event.target.checked=false;
+                        event.target.checked = false;
                         this.PlayerV.pop()
                         alert("不能再多了")
                     }
                     this.BodyGroupChange()
                 },
-                BodyGroupChange(){
-                    let PN=this.PlayerV.length
-                    let f= PN%3
+                BodyGroupChange() {
+                    let PN = this.PlayerV.length
+                    let f = PN % 3
                     // console.log( f)
-                    let basics=(PN-f)/3
-                    this.BodyGroup.GoD=basics
-                    this.BodyGroup.General=basics
-                    this.BodyGroup.Bad=basics
-                    if (f==1){this.BodyGroup.General=this.BodyGroup.General+1}
-                    if (f==2)
-                    {
-                        this.BodyGroup.General=this.BodyGroup.General+1
-                        this.BodyGroup.GoD=this.BodyGroup.GoD+1
+                    let basics = (PN - f) / 3
+                    this.BodyGroup.God = basics
+                    this.BodyGroup.General = basics
+                    this.BodyGroup.Bad = basics
+                    if (f == 1) {
+                        this.BodyGroup.General = this.BodyGroup.General + 1
+                    }
+                    if (f == 2) {
+                        this.BodyGroup.General = this.BodyGroup.General + 1
+                        this.BodyGroup.God = this.BodyGroup.God + 1
                     }
                     // console.log( this.BodyGroup)
                 },
