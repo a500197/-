@@ -89,6 +89,15 @@
                         </div>
 
                     </div>
+                    <div v-show="stage==6">
+                        <div v-if="Mode">
+                            <div v-for="player in TempPL"><br>{{player.NickName}}的身份是:<br>
+                                {{player.Identity}}<br>
+                                狀態是:{{player.Mode}}<br>
+                                <button @click="player.Mode='死亡'" v-show="player.Mode=='存活'">死了</button>
+                            </div>
+                        </div>
+                    </div>
                     <div></div>
                     <br>
                     <!-- <button id="Next">下一步</button> -->
@@ -174,79 +183,79 @@
                 Players: [{
                         ID: 0,
                         NickName: '鈴鈴',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 1,
                         NickName: '黑人',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 2,
                         NickName: '猴子',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 3,
                         NickName: '龍井亂彈阿翔',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 4,
                         NickName: '鶴',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 5,
                         NickName: '烏日金城',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 6,
                         NickName: '啾啾',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 7,
                         NickName: '小I',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 8,
                         NickName: '香菇',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 9,
                         NickName: '海線謝欣穎',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 10,
                         NickName: '龍井小流氓',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 11,
                         NickName: '北屯Elon Musk',
-
+                        Mode:'',
                         Identity: '',
                     },
                     {
                         ID: 12,
                         NickName: 'Mark',
-
+                        Mode:'',
                         Identity: '',
                     },
                 ],
@@ -424,9 +433,12 @@
                         if (this.PlayerV.indexOf(Players[v].ID) >= 0) {
                             // console.log(this.PlayerV.indexOf(Players[v].ID))
                             // this.Players[v].Mode="遊戲中"
+                            this.Players[v].Mode="存活"
                             this.TempPL.push(this.Players[v])
                             // console.log(this.Players[v])
+                            
                         }
+                        
                     }
                 },
                 ShowIdentity(value) {
