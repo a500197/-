@@ -62,18 +62,21 @@
                     </div>
                     <div v-show="stage==4">
                         <h3>選擇特殊身分類型</h3>
-                        神職(可選數量{{BodyGroup.God}}):
+                        <p style="font-weight:bold;">神職(需選擇數量{{GodNChange}}):</p>
                         <div v-for="Identity in GodIdentityType">
-                            <input type="checkbox" :id="Identity" :value="Identity.Name">{{Identity.Name}}
+                            <input type="checkbox" :id="Identity" @change="GodNM" :value="Identity.Name"
+                                v-model="GodV">{{Identity.Name}}
                         </div>
-                        特殊狼人:
+                        <br>
+                        <p style="font-weight:bold;">特殊狼人:</p>
                         <div v-for="Identity in WolfIdentityType">
-                            <input type="checkbox" :id="Identity" :value="Identity.Name">{{Identity.Name}}
+                            <input type="checkbox" :id="Identity" :value="Identity.Name"
+                                v-model="WolfV">{{Identity.Name}}
                         </div>
-
 
                     </div>
                     <div></div>
+                    <br>
                     <!-- <button id="Next">下一步</button> -->
                     <button @click="ClickAS(-1)" v-show="stage>1">上一步</button>
                     <button @click="ClickAS(1)">下一步</button>
@@ -113,6 +116,8 @@
                 PlayerNF: 12,
                 PlayerRandom: false,
                 PlayerV: [],
+                GodV: [],
+                WolfV: [],
                 PlayerNS: [{
                         value: 6,
                         text: "六",
@@ -225,7 +230,11 @@
                     },
                 ],
             },
-            computed: {},
+            computed: {
+                GodNChange: function () {
+                    return this.BodyGroup.God-this.GodV.length
+                }
+            },
             methods: {
                 ClickAS(a) {
                     let temp = this.stage + a
@@ -236,6 +245,10 @@
                     if (this.stage == 3 && this.PlayerV.length < 6) {
                         this.stage = 2
                         alert("至少需要6人")
+                    }
+                    if (this.stage == 5 && this.GodNChange!=0){
+                        this.stage = 4
+                        alert("尚未選擇足夠的神職")
                     }
                 },
                 PlayerNChange(event) {
@@ -306,6 +319,17 @@
                         this.BodyGroup.God = this.BodyGroup.God + 1
                     }
                     // console.log( this.BodyGroup)
+                },
+                GodNM(event){
+                    console.log( this.GodNChange)
+                    if (this.GodNChange<0) {
+                        // console.log( event.target.checked)
+                        event.target.checked = false;
+                        // console.log( event.target.checked)
+                        this.GodV.pop()
+                        alert("不能再選了")
+                    }
+                    
                 },
             },
         })
