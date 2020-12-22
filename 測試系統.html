@@ -31,12 +31,15 @@
                 <center>
                     <H2>選項</H2>
                     <div v-show="stage==1">
-                        <div class="form-check"><input class="form-check-input" type="radio" name="Mode"
-                                id="flexRadioDefault1"><label class="form-check-label"
-                                for="flexRadioDefault1">主持人模式</label></div>
-                        <div class="form-check"><input class="form-check-input" type="radio" name="Mode"
-                                id="flexRadioDefault2" checked><label class="form-check-label"
-                                for="flexRadioDefault2">輔助模式</label></div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault1" :value=true
+                                v-model="Mode">
+                            <label class="form-check-label" for="flexRadioDefault1">輔助模式</label>
+                            <br>
+                            <input class="form-check-input" type="radio" name="Mode" id="flexRadioDefault2" :value=false
+                                v-model="Mode">
+                            <label class="form-check-label" for="flexRadioDefault2">主持人模式</label>
+                        </div>
                     </div>
                     <div v-show="stage==2">
                         <h3>請選擇參與者</h3>
@@ -72,6 +75,17 @@
                         <div v-for="Identity in WolfIdentityType">
                             <input type="checkbox" :id="Identity" :value="Identity.Name"
                                 v-model="WolfV">{{Identity.Name}}
+                        </div>
+                    </div>
+                    <div v-show="stage==5">
+
+                        <div v-for="player in TempPL">
+                            <br>
+                            {{player.NickName}}
+                            <div v-show="Mode || ShowMode==player.ID">{{player.Identity}}</div>
+                            <button v-if="!+Mode" v-show="ShowMode!=player.ID && ShowButton.indexOf(player.ID)==-1"
+                                @click="ShowIdentity(player.ID)">查看身份</button>
+                            <br>
                         </div>
 
                     </div>
@@ -111,6 +125,9 @@
             data: {
                 stage: 1,
                 type: 'A',
+                Mode: true,
+                ShowMode: -1,
+                ShowButton: [],
                 PlayerN: 6,
                 PlayerNL: 6,
                 PlayerNF: 12,
@@ -119,6 +136,7 @@
                 GodV: [],
                 WolfV: [],
                 AllV: [],
+                TempPL: [],
                 PlayerNS: [{
                         value: 6,
                         text: "六",
@@ -156,80 +174,80 @@
                 Players: [{
                         ID: 0,
                         NickName: '鈴鈴',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 1,
                         NickName: '黑人',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 2,
                         NickName: '猴子',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 3,
                         NickName: '龍井亂彈阿翔',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 4,
                         NickName: '鶴',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 5,
                         NickName: '烏日金城',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 6,
                         NickName: '啾啾',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 7,
                         NickName: '小I',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 8,
                         NickName: '香菇',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 9,
                         NickName: '海線謝欣穎',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 10,
                         NickName: '龍井小流氓',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 11,
                         NickName: '北屯Elon Musk',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                     {
                         ID: 12,
                         NickName: 'Mark',
-                        Mode:'',
-                        Identity:'',
+
+                        Identity: '',
                     },
                 ],
                 GodIdentityType: [{
@@ -259,8 +277,8 @@
             },
             computed: {
                 GodNChange: function () {
-                    return this.BodyGroup.God-this.GodV.length
-                }
+                    return this.BodyGroup.God - this.GodV.length
+                },
             },
             methods: {
                 ClickAS(a) {
@@ -273,11 +291,10 @@
                         this.stage = 2
                         alert("至少需要6人")
                     }
-                    if (this.stage == 5 && this.GodNChange!=0){
+                    if (this.stage == 5 && this.GodNChange != 0) {
                         this.stage = 4
                         alert("尚未選擇足夠的神職")
-                    }
-                    else if(this.stage == 5 && this.GodNChange==0){
+                    } else if (this.stage == 5 && this.GodNChange == 0) {
                         this.BodyGive()
                     }
                 },
@@ -291,7 +308,7 @@
                         TempArr.push(this.Players[i].ID)
                     }
                     // let who = this.RandomPlayer()
-                    let who = this.Random(TempArr,this.PlayerN)
+                    let who = this.Random(TempArr, this.PlayerN)
                     // console.log(who)
                     this.PlayerV = []
                     for (var v = 0; v < who.length; v++) {
@@ -330,7 +347,7 @@
                     // console.log( newArr)
                     return newArr;
                 },
-                Random(arr,num){
+                Random(arr, num) {
                     let newArr = [];
                     for (var i = 0; i < num; i++) {
                         let index = Math.floor(Math.random() * arr.length);
@@ -368,46 +385,60 @@
                     }
                     // console.log( this.BodyGroup)
                 },
-                GodNM(event){
+                GodNM(event) {
                     // console.log( this.GodNChange)
-                    if (this.GodNChange<0) {
+                    if (this.GodNChange < 0) {
                         // console.log( event.target.checked)
                         event.target.checked = false;
                         // console.log( event.target.checked)
                         this.GodV.pop()
                         alert("不能再選了")
                     }
-                    
+
                 },
-                BodyGive(){
-                    let GeneralV=[]
+                BodyGive() {
+                    let GeneralV = []
                     for (let i = 0; i < this.BodyGroup.General; i++) {
                         GeneralV.push("平民(General)")
                     }
-                    let LeftWolfV=[]
-                    for (let i = 0; i < this.BodyGroup.Bad-this.WolfV.length; i++) {
+                    let LeftWolfV = []
+                    for (let i = 0; i < this.BodyGroup.Bad - this.WolfV.length; i++) {
                         LeftWolfV.push("狼人(Werewolf)")
                     }
                     // GeneralV.fill("平民(General)",0,this.BodyGroup.General)
                     // console.log( GeneralV)
-                    AllV=this.AllV
-                    AllV=[...this.GodV,...this.WolfV,...GeneralV,...LeftWolfV]
+                    AllV = this.AllV
+                    AllV = [...this.GodV, ...this.WolfV, ...GeneralV, ...LeftWolfV]
                     // console.log( this.AllV)
-                    let NAllV=this.Random(AllV,AllV.length)
+                    let NAllV = this.Random(AllV, AllV.length)
                     // console.log( NAllV)
-                    for(let i = 0; i < this.PlayerV.length; i++){
-                        this.Players[this.PlayerV[i]].Identity=NAllV[i]
+                    for (let i = 0; i < this.PlayerV.length; i++) {
+                        this.Players[this.PlayerV[i]].Identity = NAllV[i]
                     }
-                    
+
                 },
-                GameType(){
-                    Players=this.Players
-                    for (var v = 0; v < Players.length; v++){
-                    if(this.PlayerV.indexOf(Players[v].ID)>0){
-                        // console.log(this.PlayerV.indexOf(Players[v].ID))
-                        this.Players[v].Mode="遊戲中"
-                        // console.log(this.Players[v])
-                    }}
+                GameType() {
+                    this.TempPL = []
+                    Players = this.Players
+                    for (var v = 0; v < Players.length; v++) {
+                        if (this.PlayerV.indexOf(Players[v].ID) >= 0) {
+                            // console.log(this.PlayerV.indexOf(Players[v].ID))
+                            // this.Players[v].Mode="遊戲中"
+                            this.TempPL.push(this.Players[v])
+                            // console.log(this.Players[v])
+                        }
+                    }
+                },
+                ShowIdentity(value) {
+                    console.log(value)
+                    this.ShowMode = value
+                    if (this.Mode == false) {
+                        this.ShowButton.push(value)
+                    }
+
+                },
+                ResetGame() {
+                    this.ShowButton = []
                 },
             },
         })
