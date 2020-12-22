@@ -118,6 +118,7 @@
                 PlayerV: [],
                 GodV: [],
                 WolfV: [],
+                AllV: [],
                 PlayerNS: [{
                         value: 6,
                         text: "六",
@@ -155,54 +156,80 @@
                 Players: [{
                         ID: 0,
                         NickName: '鈴鈴',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 1,
                         NickName: '黑人',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 2,
                         NickName: '猴子',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 3,
                         NickName: '龍井亂彈阿翔',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 4,
                         NickName: '鶴',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 5,
                         NickName: '烏日金城',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 6,
                         NickName: '啾啾',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 7,
                         NickName: '小I',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 8,
                         NickName: '香菇',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 9,
                         NickName: '海線謝欣穎',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 10,
                         NickName: '龍井小流氓',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 11,
                         NickName: '北屯Elon Musk',
+                        Mode:'',
+                        Identity:'',
                     },
                     {
                         ID: 12,
                         NickName: 'Mark',
+                        Mode:'',
+                        Identity:'',
                     },
                 ],
                 GodIdentityType: [{
@@ -250,19 +277,29 @@
                         this.stage = 4
                         alert("尚未選擇足夠的神職")
                     }
+                    else if(this.stage == 5 && this.GodNChange==0){
+                        this.BodyGive()
+                    }
                 },
                 PlayerNChange(event) {
                     this.PlayerN = event.target.value * 1
                     let Players = this.Players
                     // console.log(Players)
                     // let who=this.RandomPlayer(Players, this.PlayerN)
-                    let who = this.RandomPlayer()
+                    let TempArr = []
+                    for (var i = 0; i < this.Players.length; i++) {
+                        TempArr.push(this.Players[i].ID)
+                    }
+                    // let who = this.RandomPlayer()
+                    let who = this.Random(TempArr,this.PlayerN)
                     // console.log(who)
                     this.PlayerV = []
                     for (var v = 0; v < who.length; v++) {
                         this.PlayerV.push(who[v])
                     }
+
                     this.BodyGroupChange()
+                    this.GameType()
                     // console.log(this.PlayerV)                              
                 },
                 IFRandom() {
@@ -293,8 +330,18 @@
                     // console.log( newArr)
                     return newArr;
                 },
+                Random(arr,num){
+                    let newArr = [];
+                    for (var i = 0; i < num; i++) {
+                        let index = Math.floor(Math.random() * arr.length);
+                        newArr.push(arr[index])
+                        arr.splice(index, 1);
+                        // console.log( TempArr)
+                    }
+                    // console.log( newArr)
+                    return newArr;
+                },
                 PlayerNM(event) {
-
                     if (this.PlayerV.length > 12) {
                         //console.log( event.target.checked)
                         event.target.checked = false;
@@ -302,6 +349,7 @@
                         alert("不能再多了")
                     }
                     this.BodyGroupChange()
+                    this.GameType()
                 },
                 BodyGroupChange() {
                     let PN = this.PlayerV.length
@@ -321,7 +369,7 @@
                     // console.log( this.BodyGroup)
                 },
                 GodNM(event){
-                    console.log( this.GodNChange)
+                    // console.log( this.GodNChange)
                     if (this.GodNChange<0) {
                         // console.log( event.target.checked)
                         event.target.checked = false;
@@ -330,6 +378,36 @@
                         alert("不能再選了")
                     }
                     
+                },
+                BodyGive(){
+                    let GeneralV=[]
+                    for (let i = 0; i < this.BodyGroup.General; i++) {
+                        GeneralV.push("平民(General)")
+                    }
+                    let LeftWolfV=[]
+                    for (let i = 0; i < this.BodyGroup.Bad-this.WolfV.length; i++) {
+                        LeftWolfV.push("狼人(Werewolf)")
+                    }
+                    // GeneralV.fill("平民(General)",0,this.BodyGroup.General)
+                    // console.log( GeneralV)
+                    AllV=this.AllV
+                    AllV=[...this.GodV,...this.WolfV,...GeneralV,...LeftWolfV]
+                    // console.log( this.AllV)
+                    let NAllV=this.Random(AllV,AllV.length)
+                    // console.log( NAllV)
+                    for(let i = 0; i < this.PlayerV.length; i++){
+                        this.Players[this.PlayerV[i]].Identity=NAllV[i]
+                    }
+                    
+                },
+                GameType(){
+                    Players=this.Players
+                    for (var v = 0; v < Players.length; v++){
+                    if(this.PlayerV.indexOf(Players[v].ID)>0){
+                        // console.log(this.PlayerV.indexOf(Players[v].ID))
+                        this.Players[v].Mode="遊戲中"
+                        // console.log(this.Players[v])
+                    }}
                 },
             },
         })
