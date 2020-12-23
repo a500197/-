@@ -65,7 +65,7 @@
                     </div>
                     <div v-show="stage==4">
                         <h3>選擇特殊身分類型</h3>
-                        <p style="font-weight:bold;">神職(需選擇數量{{GodNChange}}):</p>
+                        <p style="font-weight:bold;">神職(需選擇數量{{GodNChange()}}):</p>
                         <div v-for="Identity in GodIdentityType">
                             <input type="checkbox" :id="Identity" @change="GodNM" :value="Identity.Name"
                                 v-model="GodV">{{Identity.Name}}
@@ -91,7 +91,7 @@
                     </div>
                     <div v-show="stage==6">
                         <div v-if="Mode">
-                            <div v-for="player in TempPL"><br>{{player.NickName}}的身份是:<br>
+                            <div v-for="player in TempPL"><br><h4>{{player.NickName}}</h4>的身份是:<br>
                                 {{player.Identity}}<br>
                                 狀態是:{{player.Mode}}<br>
                                 <button @click="player.Mode='死亡'" v-show="player.Mode=='存活'">遇害</button>
@@ -285,9 +285,7 @@
                 ],
             },
             computed: {
-                GodNChange: function () {
-                    return this.BodyGroup.God - this.GodV.length
-                },
+                
             },
             methods: {
                 ClickAS(a) {
@@ -300,10 +298,10 @@
                         this.stage = 2
                         alert("至少需要6人")
                     }
-                    if (this.stage == 5 && this.GodNChange != 0) {
+                    if (this.stage == 5 && this.GodNChange() != 0) {
                         this.stage = 4
                         alert("尚未選擇足夠的神職")
-                    } else if (this.stage == 5 && this.GodNChange == 0) {
+                    } else if (this.stage == 5 && this.GodNChange() == 0) {
                         this.BodyGive()
                     }
                 },
@@ -396,7 +394,7 @@
                 },
                 GodNM(event) {
                     // console.log( this.GodNChange)
-                    if (this.GodNChange < 0) {
+                    if (this.GodNChange() < 0) {
                         // console.log( event.target.checked)
                         event.target.checked = false;
                         // console.log( event.target.checked)
@@ -451,6 +449,9 @@
                 },
                 ResetGame() {
                     this.ShowButton = []
+                },
+                GodNChange() {
+                    return this.BodyGroup.God - this.GodV.length
                 },
             },
         })
