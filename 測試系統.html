@@ -94,7 +94,7 @@
                             <div v-for="player in TempPL"><br>{{player.NickName}}的身份是:<br>
                                 {{player.Identity}}<br>
                                 狀態是:{{player.Mode}}<br>
-                                <button @click="player.Mode='死亡'" v-show="player.Mode=='存活'">死了</button>
+                                <button @click="player.Mode='死亡'" v-show="player.Mode=='存活'">遇害</button>
                             </div>
                         </div>
                     </div>
