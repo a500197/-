@@ -26,8 +26,8 @@
 
         </div>
         <div class="row justify-content-center align-items-center">
-            <div class="col"></div>
-            <div id="app" class="col ">
+            <div class="col-2"></div>
+            <div id="app" class="col-8">
                 <center>
                     <H2>選項</H2>
                     <div v-show="stage==1">
@@ -48,38 +48,56 @@
                             <select class="form-select" @change="PlayerNChange" v-show="PlayerRandom"
                                 aria-label="Default select example">
                                 <option selected disabled value=''>請選擇遊玩人數</option>
-                                <option v-for="item in PlayerNS" :value="item.value">{{item.text}}人</option>
+                                <option v-for="item of PlayerNS" :value="item.value">{{item.text}}人</option>
                             </select>
                         </div>
-                        <div v-for="Player in Players">
-                            <input type="checkbox" @change="PlayerNM" :value="Player.ID" :key="PlayerV[Player.ID]"
-                                v-model="PlayerV">{{Player.NickName}}
-                        </div>
+                        <ol>
+                            <li style="text-align:left" v-for="Player of Players">
+                                <div class="row">
+                                    <template v-if="editing === Player">
+
+                                        <div class="col-7">
+                                            <input type="text" v-model="editingText">
+                                        </div>
+                                        <div class="col">
+                                            <button class="float-right btn btn-secondary" @click="cancelEdit">取消</button>
+                                            <button class="float-right btn btn-success" @click="completeEdit">完成</button>                                            
+                                        </div>
+                                    </template>
+                                    <template v-else>
+
+                                        <div class="col-7">
+                                            <input type="checkbox" @change="PlayerNM" :value="Player.ID"
+                                                :key="PlayerV[Player.ID]" v-model="PlayerV">{{Player.NickName}}
+                                        </div>
+                                        <div class="col">
+                                            <button class="float-right btn btn-danger" @click="deletePlayer(Player)">刪除</button>
+                                            <button class="float-right btn btn-info" @click="editPlayer(Player)">修改</button>                                            
+                                        </div>
+                                </div>
+                                </template>
+
+                            </li>
+                        </ol>
                     </div>
-                    <div v-show="stage==3">
-                        <h3>調整參與者</h3>
-                        <div v-for="Player in PlayerV">
-                            <input type="text" :id="Player" @change="PlayerChange" :value="Players[Player].NickName">
-                            {{Players.ID}}
-                        </div>
-                    </div>
+
                     <div v-show="stage==4">
                         <h3>選擇特殊身分類型</h3>
                         <p style="font-weight:bold;">神職(需選擇數量{{GodNChange()}}):</p>
-                        <div v-for="Identity in GodIdentityType">
+                        <div v-for="Identity of GodIdentityType">
                             <input type="checkbox" :id="Identity" @change="GodNM" :value="Identity.Name"
                                 v-model="GodV">{{Identity.Name}}
                         </div>
                         <br>
                         <p style="font-weight:bold;">特殊狼人:</p>
-                        <div v-for="Identity in WolfIdentityType">
+                        <div v-for="Identity of WolfIdentityType">
                             <input type="checkbox" :id="Identity" :value="Identity.Name"
                                 v-model="WolfV">{{Identity.Name}}
                         </div>
                     </div>
                     <div v-show="stage==5">
 
-                        <div v-for="player in TempPL">
+                        <div v-for="player of TempPL">
                             <br>
                             {{player.NickName}}
                             <div v-show="Mode || ShowMode==player.ID">{{player.Identity}}</div>
@@ -91,7 +109,8 @@
                     </div>
                     <div v-show="stage==6">
                         <div v-if="Mode">
-                            <div v-for="player in TempPL"><br><h4>{{player.NickName}}</h4>的身份是:<br>
+                            <div v-for="player of TempPL"><br>
+                                <h4>{{player.NickName}}</h4>的身份是:<br>
                                 {{player.Identity}}<br>
                                 狀態是:{{player.Mode}}<br>
                                 <button @click="player.Mode='死亡'" v-show="player.Mode=='存活'">遇害</button>
@@ -105,7 +124,7 @@
                     <button @click="ClickAS(1)">下一步</button>
                 </center>
             </div>
-            <div class="col"></div>
+            <div class="col-2"></div>
         </div>
     </div>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.9/vue.js'></script>
@@ -146,6 +165,8 @@
                 WolfV: [],
                 AllV: [],
                 TempPL: [],
+                editing: null,
+                editingText: "",
                 PlayerNS: [{
                         value: 6,
                         text: "六",
@@ -183,79 +204,79 @@
                 Players: [{
                         ID: 0,
                         NickName: '鈴鈴',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 1,
                         NickName: '黑人',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 2,
                         NickName: '猴子',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 3,
                         NickName: '龍井亂彈阿翔',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 4,
                         NickName: '鶴',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 5,
                         NickName: '烏日金城',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 6,
                         NickName: '啾啾',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 7,
                         NickName: '小I',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 8,
                         NickName: '香菇',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 9,
                         NickName: '海線謝欣穎',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 10,
                         NickName: '龍井小流氓',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 11,
                         NickName: '北屯Elon Musk',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 12,
                         NickName: 'Mark',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                 ],
@@ -285,7 +306,7 @@
                 ],
             },
             computed: {
-                
+
             },
             methods: {
                 ClickAS(a) {
@@ -329,9 +350,6 @@
                 IFRandom() {
                     // console.log(this.PlayerRandom)                    
                     this.PlayerRandom = !this.PlayerRandom;
-                },
-                PlayerChange(event) {
-                    this.Players[event.target.id].NickName = event.target.value
                 },
                 RandomPlayer() {
                     // console.log(typeof( arr))
@@ -431,12 +449,12 @@
                         if (this.PlayerV.indexOf(Players[v].ID) >= 0) {
                             // console.log(this.PlayerV.indexOf(Players[v].ID))
                             // this.Players[v].Mode="遊戲中"
-                            this.Players[v].Mode="存活"
+                            this.Players[v].Mode = "存活"
                             this.TempPL.push(this.Players[v])
                             // console.log(this.Players[v])
-                            
+
                         }
-                        
+
                     }
                 },
                 ShowIdentity(value) {
@@ -452,6 +470,24 @@
                 },
                 GodNChange() {
                     return this.BodyGroup.God - this.GodV.length
+                },
+                editPlayer(Player) {
+                    this.editing = Player
+                    this.editingText = Player.NickName
+                },
+                deletePlayer(Player) {
+                    this.Players = this.Players.filter((target) => {
+                        // console.log(target)
+                        return target != Player;
+                    });
+                },
+                completeEdit() {
+                    this.editing.NickName = this.editingText
+                    this.cancelEdit()
+                },
+                cancelEdit() {
+                    this.editingText = ""
+                    this.editing = null
                 },
             },
         })
