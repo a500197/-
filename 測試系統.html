@@ -81,7 +81,7 @@
                         </ol>
                     </div>
 
-                    <div v-show="stage==4">
+                    <div v-show="stage==3">
                         <h3>選擇特殊身分類型</h3>
                         <p style="font-weight:bold;">神職(需選擇數量{{GodNChange()}}):</p>
                         <div v-for="Identity of GodIdentityType">
@@ -95,7 +95,7 @@
                                 v-model="WolfV">{{Identity.Name}}
                         </div>
                     </div>
-                    <div v-show="stage==5">
+                    <div v-show="stage==4">
 
                         <div v-for="player of TempPL">
                             <br>
@@ -107,7 +107,7 @@
                         </div>
 
                     </div>
-                    <div v-show="stage==6">
+                    <div v-show="stage==5">
                         <div v-if="Mode">
                             <div v-for="player of TempPL"><br>
                                 <h4>{{player.NickName}}</h4>的身份是:<br>
@@ -319,10 +319,10 @@
                         this.stage = 2
                         alert("至少需要6人")
                     }
-                    if (this.stage == 5 && this.GodNChange() != 0) {
-                        this.stage = 4
+                    if (this.stage == 4 && this.GodNChange() != 0) {
+                        this.stage = 3
                         alert("尚未選擇足夠的神職")
-                    } else if (this.stage == 5 && this.GodNChange() == 0) {
+                    } else if (this.stage == 4 && this.GodNChange() == 0) {
                         this.BodyGive()
                     }
                 },
