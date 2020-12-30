@@ -90,19 +90,26 @@
 
                     </div>
                     <div v-show="stage==6">
-                        <div v-if="Mode">
-                            <div v-for="player in TempPL"><br><h4>{{player.NickName}}</h4>的身份是:<br>
-                                {{player.Identity}}<br>
-                                狀態是:{{player.Mode}}<br>
-                                <button @click="player.Mode='死亡'" v-show="player.Mode=='存活'">遇害</button>
-                            </div>
-                        </div>
+
+
                     </div>
                     <div></div>
                     <br>
                     <!-- <button id="Next">下一步</button> -->
-                    <button @click="ClickAS(-1)" v-show="stage>1">上一步</button>
-                    <button @click="ClickAS(1)">下一步</button>
+                    <div>
+                        <button @click="ClickAS(-1)" v-show="stage>1">上一步</button>
+                        <button @click="ClickAS(1)">下一步</button>
+                    </div>
+                    <button v-show="GettingReady" @click="StatusDisplay=!StatusDisplay">玩家狀態</button>
+                    <div v-if="Mode" v-show="GettingReady&&StatusDisplay">
+                        <div v-for="player in TempPL"><br>
+                            <h4>{{player.NickName}}</h4>的身份是:<br>
+                            {{player.Identity}}<br>
+                            狀態是:{{player.Mode}}<br>
+                            <button @click="player.Mode='死亡'" v-show="player.Mode=='存活'">遇害</button>
+                        </div>
+                    </div>
+
                 </center>
             </div>
             <div class="col"></div>
@@ -146,6 +153,8 @@
                 WolfV: [],
                 AllV: [],
                 TempPL: [],
+                GettingReady: false,
+                StatusDisplay: false,
                 PlayerNS: [{
                         value: 6,
                         text: "六",
@@ -183,79 +192,79 @@
                 Players: [{
                         ID: 0,
                         NickName: '鈴鈴',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 1,
                         NickName: '黑人',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 2,
                         NickName: '猴子',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 3,
                         NickName: '龍井亂彈阿翔',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 4,
                         NickName: '鶴',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 5,
                         NickName: '烏日金城',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 6,
                         NickName: '啾啾',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 7,
                         NickName: '小I',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 8,
                         NickName: '香菇',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 9,
                         NickName: '海線謝欣穎',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 10,
                         NickName: '龍井小流氓',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 11,
                         NickName: '北屯Elon Musk',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                     {
                         ID: 12,
                         NickName: 'Mark',
-                        Mode:'',
+                        Mode: '',
                         Identity: '',
                     },
                 ],
@@ -285,7 +294,7 @@
                 ],
             },
             computed: {
-                
+
             },
             methods: {
                 ClickAS(a) {
@@ -303,6 +312,11 @@
                         alert("尚未選擇足夠的神職")
                     } else if (this.stage == 5 && this.GodNChange() == 0) {
                         this.BodyGive()
+                    }
+                    if (temp >= 6) {
+                        this.GettingReady = true
+                    } else {
+                        this.GettingReady = false
                     }
                 },
                 PlayerNChange(event) {
@@ -431,12 +445,12 @@
                         if (this.PlayerV.indexOf(Players[v].ID) >= 0) {
                             // console.log(this.PlayerV.indexOf(Players[v].ID))
                             // this.Players[v].Mode="遊戲中"
-                            this.Players[v].Mode="存活"
+                            this.Players[v].Mode = "存活"
                             this.TempPL.push(this.Players[v])
                             // console.log(this.Players[v])
-                            
+
                         }
-                        
+
                     }
                 },
                 ShowIdentity(value) {
