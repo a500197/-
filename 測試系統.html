@@ -110,19 +110,45 @@
                     </div>
                     <div v-show="stage==5">
                         <h1>天黑請閉眼<br>
-                        狼人請殺人</h1>
+                            狼人請殺人</h1>
                         <div v-for="player of TempPL"><br>
                             <h4>{{player.NickName}}
                                 <button @click="WerewolfKilling(player)" v-show="player.Mode=='存活'">殺他</button>
                         </div>
                     </div>
                     <div v-show="stage==6">
-                        <h1>女巫時間</h1>
+                        <h1>女巫回合</h1>
                         <div v-for="player of TempPL"><br>
                             <h4>{{player.NickName}}
-                                <button @click="UseAntidote(player)" v-show="WitchItems.解藥>0&&player.Mode=='標記'">救他</button>
-                                <button @click="UsePoison(player)" v-show="WitchItems.毒藥>0&&(player.Mode=='存活'||player.Mode=='標記')">毒殺他</button>
+                                <button @click="UseAntidote(player)"
+                                    v-show="WitchItems.解藥>0&&player.Mode=='標記'">救他</button>
+                                <button @click="UsePoison(player)"
+                                    v-show="WitchItems.毒藥>0&&(player.Mode=='存活'||player.Mode=='標記')">毒殺他</button>
                         </div>
+                        <button @click="ClickAS(1)">跳過</button>
+                    </div>
+                    <div v-show="stage==7">
+                        <h1>預言家回合</h1>
+                        <div v-for="player of TempPL"><br>
+                            <h4>{{player.NickName}}
+                                <button @click="Prophecy(player)" v-show="!player.Check">查驗身分</button>
+                                <p v-show="player.Check">{{player.Identity}}</p>
+                        </div>
+                    </div>
+                    <div v-show="stage==8">
+                        <h1>守衛回合</h1>
+                        <div>
+                            <div v-for="player of TempPL"><br>
+                                <h4>{{player.NickName}}
+                                    <button @click="Guard(player)">守護他</button>
+                            </div>
+                        </div>
+                        <button @click="NotGuarding">跳過</button>
+                    </div>
+                    <div v-show="stage==9">
+                        <h1>天亮了</h1>
+                        {{DawnLines()}}
+                        
                     </div>
                     <div></div>
                     <br>
@@ -140,7 +166,6 @@
                             <button @click="player.Mode='死亡'" v-show="player.Mode=='存活'">遇害</button>
                         </div>
                     </div>
-
                 </center>
             </div>
             <div class="col-2"></div>
@@ -157,16 +182,7 @@
         integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous">
     </script>
     <script>
-        $(function () {
-
-            // $("#Next").bind("click", function () {
-            //     vm.stage+=1
-            // })
-            // $("#PlayerN").bind("change",function()
-            // {
-            //     let PlayerN=$("#PlayerN").val()
-            // })
-        });
+        $(function () {});
         let vm = new Vue({
             el: app,
             data: {
@@ -178,13 +194,14 @@
                 PlayerN: 6,
                 PlayerNL: 6,
                 PlayerNF: 12,
-                round:0,
+                round: 0,
                 PlayerRandom: false,
                 PlayerV: [],
                 GodV: [],
                 WolfV: [],
                 AllV: [],
                 TempPL: [],
+                BeGuarded: "",
                 GettingReady: false,
                 StatusDisplay: false,
                 WitchItems: {
@@ -232,78 +249,91 @@
                         NickName: '鈴鈴',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 1,
                         NickName: '黑人',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 2,
                         NickName: '猴子',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 3,
                         NickName: '龍井亂彈阿翔',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 4,
                         NickName: '鶴',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 5,
                         NickName: '烏日金城',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 6,
                         NickName: '啾啾',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 7,
                         NickName: '小I',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 8,
                         NickName: '香菇',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 9,
                         NickName: '海線謝欣穎',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 10,
                         NickName: '龍井小流氓',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 11,
                         NickName: '北屯Elon Musk',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                     {
                         ID: 12,
                         NickName: 'Mark',
                         Mode: '',
                         Identity: '',
+                        Check: false,
                     },
                 ],
                 GodIdentityType: [{
@@ -353,13 +383,19 @@
                     }
                     if (temp == 5) {
                         this.GettingReady = true
-                        this.round=this.round+1
+                        this.round = this.round + 1
                     }
                     if (temp < 5) {
                         this.GettingReady = false
                     }
-                    if (temp == 6 && this.GodV.indexOf("女巫") == -1) {
-                        this.stage = 7
+                    if (this.stage == 6 && this.GodV.indexOf("女巫") == -1) {
+                        this.stage = 7    
+                    }
+                    if (this.stage == 7 && this.GodV.indexOf("預言家") == -1) {
+                        this.stage = 8
+                    }
+                    if (this.stage == 8 && this.GodV.indexOf("守衛") == -1) {
+                        this.stage = 9
                     }
                 },
                 PlayerNChange(event) {
@@ -448,9 +484,9 @@
                 },
                 GodNM(event) {
                     // console.log( event.target.value)
-                    if(this.GodV.indexOf("女巫") > -1){
-                        this.WitchItems.解藥=1
-                        this.WitchItems.毒藥=1
+                    if (this.GodV.indexOf("女巫") > -1) {
+                        this.WitchItems.解藥 = 1
+                        this.WitchItems.毒藥 = 1
                     }
                     // console.log( this.GodNChange)
                     if (this.GodNChange() < 0) {
@@ -460,7 +496,6 @@
                         this.GodV.pop()
                         alert("不能再選了")
                     }
-
                 },
                 BodyGive() {
                     let GeneralV = []
@@ -508,6 +543,7 @@
                 },
                 ResetGame() {
                     this.ShowButton = []
+                    this.BeGuarded = ""
                 },
                 GodNChange() {
                     return this.BodyGroup.God - this.GodV.length
@@ -534,21 +570,42 @@
                     player.Mode = "標記"
                     this.ClickAS(1)
                 },
-                UseAntidote(player){
-                    console.log(player)
-                    if (this.round>1&&player.Identity=="女巫"){
+                UseAntidote(player) {
+                    //console.log(player)
+                    if (this.round > 1 && player.Identity == "女巫") {
                         alert("女巫僅有第一夜可自救")
-                    }
-                    else{
+                    } else {
                         player.Mode = "存活"
-                        this.WitchItems.解藥=0
+                        this.WitchItems.解藥 = 0
                         this.ClickAS(1)
                     }
                 },
-                UsePoison(player){
+                UsePoison(player) {
                     player.Mode = "死亡"
-                    this.WitchItems.毒藥=0
+                    this.WitchItems.毒藥 = 0
                     this.ClickAS(1)
+                },
+                Prophecy(player) {
+                    player.Check = true
+                    alert(player.Identity)
+                    this.ClickAS(1)
+                    // console.log(player.Check)
+                    // console.log(!player.Check)
+                },
+                Guard(player) {
+                    //console.log(player.ID)
+                    let t=player.NickName
+                    console.log(t)
+                    this.BeGuarded = t
+                    this.ClickAS(1)
+                },
+                NotGuarding(){
+                    this.BeGuarded =""
+                    this.ClickAS(1)
+                },
+                DawnLines(){
+                    
+                    return "a"
                 }
             },
         })
