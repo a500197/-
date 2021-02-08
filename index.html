@@ -369,15 +369,18 @@
                     let temp = this.stage + a
                     if (temp < 1) {
                         this.stage = 1
+                        this.ClickAS(0)
                     }
                     this.stage = temp
                     if (temp == 3 && this.PlayerV.length < 6) {
                         this.stage = 2
                         alert("至少需要6人")
+                        this.ClickAS(0)
                     }
                     if (temp == 4 && this.GodNChange() != 0) {
                         this.stage = 3
                         alert("尚未選擇足夠的神職")
+                        this.ClickAS(0)
                     } else if (temp == 4 && this.GodNChange() == 0) {
                         this.BodyGive()
                     }
@@ -389,13 +392,16 @@
                         this.GettingReady = false
                     }
                     if (this.stage == 6 && this.GodV.indexOf("女巫") == -1) {
-                        this.stage = 7    
+                        this.stage = 7
+                        this.ClickAS(0)
                     }
                     if (this.stage == 7 && this.GodV.indexOf("預言家") == -1) {
                         this.stage = 8
+                        this.ClickAS(0)
                     }
                     if (this.stage == 8 && this.GodV.indexOf("守衛") == -1) {
                         this.stage = 9
+                        this.ClickAS(0)
                     }
                 },
                 PlayerNChange(event) {
@@ -528,9 +534,7 @@
                             this.Players[v].Mode = "存活"
                             this.TempPL.push(this.Players[v])
                             // console.log(this.Players[v])
-
                         }
-
                     }
                 },
                 ShowIdentity(value) {
